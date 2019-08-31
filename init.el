@@ -1,3 +1,4 @@
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 ;;; init.el --- Spacemacs Initialization File
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
