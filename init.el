@@ -48,3 +48,26 @@
       (unless (server-running-p)
         (message "Starting a server...")
         (server-start)))))
+
+(defun new-post ()
+  ;; prompt for post name
+  ;; replace spaces with dashes
+  ;; prepend today's date
+  ;; add .md
+  ;; open file buffer
+  (interactive
+   (let*  ((name (read-string "Post name: " nil 'my-history))
+           (posts-dir "~/dot-asterisk/resources/templates/md/posts")
+           (date (format-time-string "%Y-%m-%d")))
+     ;; down case name for filename
+     (find-file (concat posts-dir "/" (downcase (format "%s-%s.md" date (replace-regexp-in-string " +" "-" name)))))
+
+     ;; enter meta map
+     ;; {:title "name"
+     ;;  :layout :post
+     ;;  :tags [""]
+     ;;  :toc true}
+     (insert (format "{:title \"%s\"\n :layout :post\n :tags [\"\"]\n :toc false}\n\n" (capitalize name)))
+     (insert "### Headline\n\nenter stuff here\n"))))
+
+(defalias 'ecs 'find-file-other-window)
