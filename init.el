@@ -53,21 +53,33 @@
   ;; prompt for post name
   ;; replace spaces with dashes
   ;; prepend today's date
-  ;; add .md
+  ;; add .org
   ;; open file buffer
   (interactive
    (let*  ((name (read-string "Post name: " nil 'my-history))
-           (posts-dir "~/dot-asterisk/resources/templates/md/posts")
-           (date (format-time-string "%Y-%m-%d")))
-     ;; down case name for filename
-     (find-file (concat posts-dir "/" (downcase (format "%s-%s.md" date (replace-regexp-in-string " +" "-" name)))))
+           (posts-dir "~/projects/dot-asterix-v2/src/posts/")
+           (date (format-time-string "%Y/%m/%d")))
+     (find-file (concat posts-dir (downcase (format "%s/%s.org" date (replace-regexp-in-string " +" "-" name)))))
+     (insert "#+INCLUDE: \"../../../../options/default-config.org\"\n")
+     (insert (format "#+SUBTITLE: %s\n\n" name))
+     (org-mode)
+     )))
 
-     ;; enter meta map
-     ;; {:title "name"
-     ;;  :layout :post
-     ;;  :tags [""]
-     ;;  :toc true}
-     (insert (format "{:title \"%s\"\n :layout :post\n :tags [\"\"]\n :toc false}\n\n" (capitalize name)))
-     (insert "### Headline\n\nenter stuff here\n"))))
+(defun insert-subheading ()
+  "Insert a new subbheading with same level as current, after current subtree."
+  (interactive)
+  (org-back-to-heading)
+  (org-insert-heading)
+  (org-move-subtree-down)
+  (org-demote-subtree)
+  (end-of-line 1))
+
+(defun insert-completion ()
+  "Insert a new subbheading with same level as current, after current subtree."
+  (interactive)
+  (evil-append 1)
+  (insert " [/][%]")
+  (evil-force-normal-state)
+  (org-ctrl-c-ctrl-c))
 
 (defalias 'ecs 'find-file-other-window)
