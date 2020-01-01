@@ -44,6 +44,7 @@ This function should only modify configuration layer settings."
        deft-directory "~/notes/deft")
      clojure
      protobuf
+     exwm
      (pdf :variables pdf-annot-activate-created-annotations t)
      ;; slack
      ;; mu4e
@@ -582,12 +583,312 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(org-agenda-files (quote ("~/notes/deft/gtd.org" "~/notes/deft/tickler.org")))
  '(package-selected-packages
    (quote
     (protobuf-mode company-reftex auctex org-noter toml-mode racer flycheck-rust cargo rust-mode ox-hugo pdf-tools slack circe oauth2 websocket emojify emoji-cheat-sheet-plus company-emoji deft dap-mode bui tree-mode mvn meghanada maven-test-mode lsp-java groovy-mode groovy-imports pcache gradle-mode ensime sbt-mode scala-mode company-emacs-eclim eclim sql-indent dockerfile-mode docker tablist docker-tramp xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help utop tuareg caml reason-mode ocp-indent merlin dune lsp-ui lsp-treemacs helm-lsp company-lsp org-journal vmd-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data ag yasnippet-snippets smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-cliplink org-brain magit-svn magit-gitflow magit-popup htmlize helm-org-rifle helm-org helm-gitignore helm-git-grep helm-company helm-c-yasnippet gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy evil-org evil-magit magit transient git-commit with-editor company-tern company-statistics company-go clojure-snippets auto-yasnippet ac-ispell auto-complete js2-refactor yasnippet yaml-mode web-beautify tern seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake prettier-js nodejs-repl mmm-mode minitest markdown-toc livid-mode skewer-mode simple-httpd json-navigator hierarchy json-mode json-snatcher json-reformat multiple-cursors js2-mode js-doc godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc go-mode gh-md cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a chruby bundler inf-ruby yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements lsp-python-ms python lsp-mode markdown-mode dash-functional live-py-mode importmagic epc ctable concurrent deferred helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags counsel swiper ivy company-anaconda company blacken anaconda-mode pythonic treemacs-evil paradox spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-textobj-line evil-surround evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-ediff evil-cleverparens paredit evil-args evil-anzu anzu evil goto-chg undo-tree ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile toc-org symon symbol-overlay string-inflection spaceline-all-the-icons smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el password-generator overseer org-plus-contrib org-bullets open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-unimpaired evil-numbers evil-nerd-commenter evil-escape eval-sexp-fu elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode bind-map auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
     ((eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "sitemap.org" :sitemap-title "" :sitemap-style
+                        (quote list)
+                        :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "sitemap.org" :sitemap-title "Sitemap" :sitemap-style
+                        (quote list)
+                        :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "index.org" :sitemap-title "Dot Asterix" :sitemap-style
+                        (quote list)
+                        :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "index.org" :sitemap-title "Index" :sitemap-style
+                        (quote list)
+                        :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "index.org" :sitemap-title "Index" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "index.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "index.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("project" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts")
+                    :auto-sitemap t :sitemap-title "index.org")))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-title "index.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-title "index.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("project" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
            ((path
              (dir)
              (concat

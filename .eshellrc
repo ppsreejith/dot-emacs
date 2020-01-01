@@ -12,3 +12,5 @@ export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=/Library/TeX/texbin:$PATH
 alias emulator=$ANDROID_HOME/emulator/emulator
+export N_PREFIX=$HOME/n
+export PATH=$N_PREFIX/bin:$PATH
