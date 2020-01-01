@@ -1,4 +1,5 @@
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+(require 'cl)
 ;;; init.el --- Spacemacs Initialization File
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
@@ -57,7 +58,7 @@
   ;; open file buffer
   (interactive
    (let*  ((name (read-string "Post name: " nil 'my-history))
-           (posts-dir "~/projects/dot-asterix-v2/src/posts/")
+           (posts-dir "~/projects/dot-asterix/src/posts/")
            (date (format-time-string "%Y/%m/%d")))
      (find-file (concat posts-dir (downcase (format "%s/%s.org" date (replace-regexp-in-string " +" "-" name)))))
      (insert "#+INCLUDE: \"../../../../options/default-config.org\"\n")
@@ -83,3 +84,4 @@
   (org-ctrl-c-ctrl-c))
 
 (defalias 'ecs 'find-file-other-window)
+
