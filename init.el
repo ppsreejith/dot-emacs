@@ -85,3 +85,7 @@
 
 (defalias 'ecs 'find-file-other-window)
 
+(defun copy-google-auth ()
+  "Copy google auth output to clipboard"
+  (interactive)
+  (shell-command-to-string "oathtool --base32 --totp rwfx7hpquwk43k222jgdfutu5f2d6dzd | pbcopy"))
