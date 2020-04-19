@@ -46,7 +46,7 @@ This function should only modify configuration layer settings."
        deft-directory "~/notes/deft")
      clojure
      protobuf
-     exwm
+     ;; exwm
      debug
      (pdf :variables pdf-annot-activate-created-annotations t)
      ;; slack
