@@ -33,7 +33,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(rust
+   '(csv
+     rust
      vimscript
      emoji
      html
@@ -46,6 +47,7 @@ This function should only modify configuration layer settings."
      clojure
      protobuf
      exwm
+     debug
      (pdf :variables pdf-annot-activate-created-annotations t)
      ;; slack
      ;; mu4e
@@ -62,6 +64,7 @@ This function should only modify configuration layer settings."
      javascript
      (reasonml :variables reason-auto-refmt t)
      lsp
+     kubernetes
      dap
      sql
      ;; ----------------------------------------------------------------
@@ -543,7 +546,9 @@ before packages are loaded."
   (spacemacs/set-leader-keys "ot" 'org-table-create-or-convert-from-region)
   (spacemacs/set-leader-keys "or" 'org-noter)
   (spacemacs/set-leader-keys "op" 'new-post)
+  (spacemacs/set-leader-keys "og" 'copy-google-auth)
   (setq org-journal-dir "~/notes/journal/")
+  (golden-ratio-mode 1)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
   (add-hook 'org-archive-hook 'org-save-all-org-buffers)
   (add-hook 'org-after-refile-insert-hook 'org-save-all-org-buffers)
@@ -591,6 +596,39 @@ This function is called at the very end of Spacemacs initialization."
  '(safe-local-variable-values
    (quote
     ((eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-html-link-use-abs-url t)
+           (setq org-html-link-home "/")
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :auto-sitemap t :sitemap-filename "sitemap.org" :sitemap-title "" :sitemap-style
+                        (quote list)
+                        :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("blog" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval cl-flet
            ((path
              (dir)
              (concat
