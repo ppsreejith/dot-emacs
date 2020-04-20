@@ -1,0 +1,3 @@
+[submodule "exwm"]
+	path = private/local/exwm
+	url = https://github.com/timor/spacemacsOS
