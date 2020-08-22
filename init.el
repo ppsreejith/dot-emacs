@@ -66,6 +66,16 @@
      (org-mode)
      )))
 
+(defun reload-dir-locals ()
+  ;; prompt for post name
+  ;; replace spaces with dashes
+  ;; prepend today's date
+  ;; add .org
+  ;; open file buffer
+  (interactive
+   (hack-dir-local-variables-non-file-buffer)
+   ))
+
 (defun insert-subheading ()
   "Insert a new subbheading with same level as current, after current subtree."
   (interactive)

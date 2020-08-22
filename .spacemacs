@@ -33,12 +33,15 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(csv
+   '(typescript
+     csv
      rust
      vimscript
      emoji
      html
+     react
      python
+     graphql-mode
      yaml
      deft
      (deft :variables
@@ -128,7 +131,7 @@ This function should only modify configuration layer settings."
             eshell-history-file-name "~/.eshell_history"
             eshell-cmpl-cycle-completions nil
             shell-default-position 'bottom)
-     ;; spell-checking
+     spell-checking
      ;; syntax-checking
      treemacs
      ;; version-control
@@ -558,13 +561,24 @@ before packages are loaded."
   (spacemacs/set-leader-keys "oc" 'calendar)
   (spacemacs/set-leader-keys "ot" 'org-table-create-or-convert-from-region)
   (spacemacs/set-leader-keys "or" 'org-noter)
+  (spacemacs/set-leader-keys "odr" 'reload-dir-locals)
   (spacemacs/set-leader-keys "op" 'new-post)
   (spacemacs/set-leader-keys "og" 'copy-google-auth)
   (setq org-journal-dir "~/notes/journal/")
-  (golden-ratio-mode 1)
+  (setq python-shell-interpreter "python3")
+  (setq org-startup-align-all-tables t)
+  ;; (golden-ratio-mode 1)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
   (add-hook 'org-archive-hook 'org-save-all-org-buffers)
   (add-hook 'org-after-refile-insert-hook 'org-save-all-org-buffers)
+  (add-hook 'json-mode-hook
+            (lambda ()
+              (make-local-variable 'js-indent-level)
+              (setq js-indent-level 2)))
+  (add-hook 'js-mode-hook
+            (lambda ()
+              (make-local-variable 'js-indent-level)
+              (setq js-indent-level 2)))
   (spacemacs/toggle-evil-safe-lisp-structural-editing-on-register-hooks)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "is" 'insert-subheading)
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "ic" 'insert-completion)
@@ -632,7 +646,111 @@ This function is called at the very end of Spacemacs initialization."
     (github-search github-clone git-gutter-fringe+ fringe-helper git-gutter+ gist gh marshal logito forge ghub closql treepy browse-at-remote graphviz-dot-mode exwm xelb realgud test-simple loc-changes load-relative kubernetes-evil kubernetes csv-mode ansi package-build shut-up epl git commander f dash s protobuf-mode company-reftex auctex org-noter toml-mode racer flycheck-rust cargo rust-mode ox-hugo pdf-tools slack circe oauth2 websocket emojify emoji-cheat-sheet-plus company-emoji deft dap-mode bui tree-mode mvn meghanada maven-test-mode lsp-java groovy-mode groovy-imports pcache gradle-mode ensime sbt-mode scala-mode company-emacs-eclim eclim sql-indent dockerfile-mode docker tablist docker-tramp xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help utop tuareg caml reason-mode ocp-indent merlin dune lsp-ui lsp-treemacs helm-lsp company-lsp org-journal vmd-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode impatient-mode helm-css-scss haml-mode emmet-mode company-web web-completion-data ag yasnippet-snippets smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-mime org-download org-cliplink org-brain magit-svn magit-gitflow magit-popup htmlize helm-org-rifle helm-org helm-gitignore helm-git-grep helm-company helm-c-yasnippet gnuplot gitignore-templates gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link fuzzy evil-org evil-magit magit transient git-commit with-editor company-tern company-statistics company-go clojure-snippets auto-yasnippet ac-ispell auto-complete js2-refactor yasnippet yaml-mode web-beautify tern seeing-is-believing rvm ruby-tools ruby-test-mode ruby-refactor ruby-hash-syntax rubocopfmt rubocop rspec-mode robe rbenv rake prettier-js nodejs-repl mmm-mode minitest markdown-toc livid-mode skewer-mode simple-httpd json-navigator hierarchy json-mode json-snatcher json-reformat multiple-cursors js2-mode js-doc godoctor go-tag go-rename go-impl go-guru go-gen-test go-fill-struct go-eldoc go-mode gh-md cider-eval-sexp-fu cider sesman queue parseedn clojure-mode parseclj a chruby bundler inf-ruby yapfify stickyfunc-enhance pytest pyenv-mode py-isort pippel pipenv pyvenv pip-requirements lsp-python-ms python lsp-mode markdown-mode dash-functional live-py-mode importmagic epc ctable concurrent deferred helm-pydoc helm-gtags helm-cscope xcscope ggtags cython-mode counsel-gtags counsel swiper ivy company-anaconda company blacken anaconda-mode pythonic treemacs-evil paradox spinner evil-visualstar evil-visual-mark-mode evil-tutor evil-textobj-line evil-surround evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state iedit evil-goggles evil-exchange evil-ediff evil-cleverparens paredit evil-args evil-anzu anzu evil goto-chg undo-tree ws-butler writeroom-mode winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package treemacs-projectile toc-org symon symbol-overlay string-inflection spaceline-all-the-icons smartparens restart-emacs request rainbow-delimiters popwin persp-mode pcre2el password-generator overseer org-plus-contrib org-bullets open-junk-file nameless move-text macrostep lorem-ipsum link-hint indent-guide hungry-delete hl-todo highlight-parentheses highlight-numbers highlight-indentation helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-mode-manager helm-make helm-flx helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flx-ido fill-column-indicator fancy-battery eyebrowse expand-region evil-unimpaired evil-numbers evil-nerd-commenter evil-escape eval-sexp-fu elisp-slime-nav editorconfig dumb-jump dotenv-mode doom-modeline diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode bind-map auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
  '(safe-local-variable-values
    (quote
-    ((javascript-backend . tern)
+    ((eval cl-flet
+           ((path
+             (dir)
+             (concat
+              (projectile-project-root)
+              dir)))
+           (setq org-publish-project-alist
+                 (list
+                  (list "pages" :base-directory
+                        (path "src")
+                        :publishing-directory
+                        (path "public")
+                        :recursive t :base-extension "org" :exclude ".*-config.org" :publishing-function
+                        (quote org-html-publish-to-html))
+                  (list "styles" :base-directory
+                        (path "src/styles")
+                        :publishing-directory
+                        (path "public/styles")
+                        :recursive t :base-extension "css" :publishing-function
+                        (quote org-publish-attachment))
+                  (list "scripts" :base-directory
+                        (path "src/scripts")
+                        :publishing-directory
+                        (path "public/scripts")
+                        :recursive t :base-extension "js" :publishing-function
+                        (quote org-publish-attachment))
+                  (quote
+                   ("project" :components
+                    ("pages" "styles" "scripts"))))))
+     (eval add-hook
+           (quote org-export-before-processing-hook)
+           (lambda
+             (arg)
+             (save-excursion
+               (goto-char
+                (point-max))
+               (if-let*
+                   ((file-path
+                     (buffer-file-name))
+                    (backlinks
+                     (org-roam--get-backlinks file-path))
+                    (grouped-backlinks
+                     (--group-by
+                      (nth 0 it)
+                      backlinks)))
+                   (progn
+                     (insert "
+
+- backlinks :: ")
+                     (dolist
+                         (group grouped-backlinks)
+                       (let
+                           ((file-from
+                             (car group)))
+                         (insert
+                          (format " [[file:%s][%s]], " file-from
+                                  (org-roam--get-title-or-slug file-from)))))))))
+           nil t)
+     (eval defun org-hugo--get-date
+           (info fmt)
+           (let
+               ((filename
+                 (first
+                  (rest
+                   (member :input-file info)))))
+             (let
+                 ((match
+                   (let nil
+                     (string-match "/\\([0-9]+\\)-" filename 1)
+                     (substring filename
+                                (match-beginning 1)
+                                (match-end 1)))))
+               (concat
+                (substring match 0 4)
+                "-"
+                (substring match 4 6)
+                "-"
+                (substring match 6 8)
+                "T"
+                (substring match 8 10)
+                ":"
+                (substring match 10 12)
+                ":"
+                (substring match 12 14)))))
+     (org-roam-capture-templates
+      ("d" "default" plain
+       (function org-roam-capture--get-point)
+       "%?" :file-name "%<%Y%m%d%H%M%S>-${slug}" :head "#+hugo_base_dir: ../
+#+hugo_section: notes
+#+hugo_slug: ${title}
+#+TITLE: ${title}" :unnarrowed t))
+     (eval defun org-hugo--get-date
+           (info fmt)
+           (or
+            (org-entry-get
+             (point)
+             "CLOSED")
+            (org-string-nw-p
+             (org-export-data
+              (plist-get info :date)
+              info))
+            (org-string-nw-p
+             (org-export-get-date info fmt))))
+     (org-confirm-babel-evaluate)
+     (javascript-backend . tern)
      (javascript-backend . lsp)
      (go-backend . go-mode)
      (go-backend . lsp)))))
