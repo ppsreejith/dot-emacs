@@ -9,7 +9,7 @@
     :hook
     (after-init . org-roam-mode)
     :custom
-    (org-roam-directory "~/roam")
+    (org-roam-directory "~/projects/notesu/roam")
     :init
     (progn
       (spacemacs/declare-prefix "ar" "org-roam")
