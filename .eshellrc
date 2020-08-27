@@ -11,7 +11,7 @@ export PATH=/usr/local/bin:$PATH
 export PATH=$HOME/.local/bin:$PATH
 export PATH=/Library/TeX/texbin:$PATH
 export PATH=$HOME/.pyenv/shims:$PATH
-alias emulator=$ANDROID_HOME/emulator/emulator
+export PATH=$ANDROID_HOME/emulator:$PATH
 export PYENV_VERSION=""
 
 export LANG="en_US.UTF-8"
