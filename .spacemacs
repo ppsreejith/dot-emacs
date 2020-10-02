@@ -62,7 +62,9 @@ This function should only modify configuration layer settings."
            ruby-version-manager 'rbenv
            ruby-test-runner 'rspec)
      ;; go
-     (go :variables go-format-before-save t)
+     (go :variables
+         go-format-before-save t
+         go-backend 'lsp)
      ;; (go :variables go-backend 'go-mode)
      (java :variables java-backend 'lsp)
      javascript
